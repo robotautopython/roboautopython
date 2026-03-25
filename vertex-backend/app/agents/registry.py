@@ -1,22 +1,22 @@
 from typing import Dict, Any
 from app.agents.automation_expert import SYSTEM_INSTRUCTION as AUTOMATION_EXPERT_SI
+from app.agents.logo_designer import SYSTEM_INSTRUCTION as LOGO_DESIGNER_SI
 
 # Dicionário central de agentes
 AGENTS_REGISTRY: Dict[str, Dict[str, Any]] = {
     "automation-expert": {
         "id": "automation-expert",
-        "name": "Especialista em Automação Python",
-        "description": "Robô focado em criar e debugar automações funcionais com Python.",
+        "name": "RoboAuto",
+        "description": "Especialista em Automação Inteligente e IA para produtividade.",
         "system_instruction": AUTOMATION_EXPERT_SI,
         "icon": "Bot",
     },
-    # Novos agentes podem ser adicionados aqui facilmente
-    "business-consultant": {
-        "id": "business-consultant",
-        "name": "Consultor de Negócios",
-        "description": "Especialista em estratégia e faturamento empresarial.",
-        "system_instruction": "Você é um consultor de negócios focado em aumentar o faturamento...",
-        "icon": "Briefcase",
+    "designer": {
+        "id": "designer",
+        "name": "Designer",
+        "description": "Criação de marcas, logos e identidade visual premium.",
+        "system_instruction": LOGO_DESIGNER_SI,
+        "icon": "Palette",
     }
 }
 

@@ -52,7 +52,7 @@ export const useChat = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isLoading])
 
-  const sendMessage = async (text: string, image?: File) => {
+  const sendMessage = async (text: string, agentId: string = "automation-expert", image?: File) => {
     if ((!text.trim() && !image) || isLoading) return
     
     setError(null)
@@ -67,12 +67,14 @@ export const useChat = () => {
     setIsLoading(true)
 
     try {
-      const data = await chatService.sendMessage(text.trim(), "automation-expert", image)
+      const data = await chatService.sendMessage(text.trim(), agentId, image)
       
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data.response,
+        agentId: agentId,
+        imageGenerated: data.image_base64
       }
 
       setMessages((prev) => [...prev, assistantMsg])

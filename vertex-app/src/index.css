@@ -10,6 +10,7 @@
   
   /* Accent colors */
   --accent-cyan: #00e5ff;
+  --accent-pink: #ff00ff;
   --accent-purple: #b388ff;
   --accent-blue: #448aff;
   --accent-green: #00e676;
@@ -33,6 +34,8 @@
   /* Shadows */
   --shadow-glow-cyan: 0 0 20px rgba(0, 229, 255, 0.15), 0 0 60px rgba(0, 229, 255, 0.05);
   --shadow-glow-purple: 0 0 20px rgba(179, 136, 255, 0.15), 0 0 60px rgba(179, 136, 255, 0.05);
+  --shadow-glow-pink: 0 0 20px rgba(255, 0, 255, 0.15), 0 0 60px rgba(255, 0, 255, 0.05);
+  --accent-pink-glow: rgba(255, 0, 255, 0.4);
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
   
   /* Sizing */
@@ -49,6 +52,12 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 html {
   font-size: 16px;
   scroll-behavior: smooth;
@@ -58,16 +67,23 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
-  min-height: 100vh;
+  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Scrollbar */

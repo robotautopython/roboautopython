@@ -137,9 +137,6 @@ export const InputArea = ({ onSendMessage, isLoading }: InputAreaProps) => {
           </button>
         </form>
       </div>
-      <div className="input-hint">
-        <ImagePlus size={12} /> Envie imagens · <strong>Enter</strong> para enviar · <strong>Shift+Enter</strong> para nova linha
-      </div>
     </div>
   )
 }

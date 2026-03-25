@@ -1,8 +1,14 @@
-import { History as HistoryIcon, LayoutGrid, Shield, LogOut, XCircle } from 'lucide-react'
+import React from 'react' // v2-fix-ref
+import { History as HistoryIcon, Shield, LogOut, XCircle } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import type { Agent } from '../types'
+import { AgentTabs } from './AgentTabs'
 
 interface HeaderProps {
+  agents: Agent[]
+  activeAgentId: string
+  onAgentChange: (id: string) => void
   hasMessages: boolean
   canUndo: boolean
   onReset: () => void
@@ -10,7 +16,16 @@ interface HeaderProps {
   onOpenPortfolio: () => void
 }
 
-export const Header = ({ hasMessages, canUndo, onReset, onUndo, onOpenPortfolio }: HeaderProps) => {
+export const Header: React.FC<HeaderProps> = ({
+  agents,
+  activeAgentId,
+  onAgentChange,
+  hasMessages,
+  canUndo,
+  onReset,
+  onUndo,
+  onOpenPortfolio
+}) => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -19,24 +34,46 @@ export const Header = ({ hasMessages, canUndo, onReset, onUndo, onOpenPortfolio 
     navigate('/login')
   }
 
+  const activeAgent = agents.find(a => a.id === activeAgentId) || agents[0]
+  const isDesigner = activeAgentId === 'designer'
+
   return (
     <header className="header">
       <div className="header-left">
-        <div className="logo-icon brand-logo">
-          <img src="/roboauto-logo.png" alt="RoboAuto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div className="logo-icon">
+          <img
+            src={activeAgentId === 'designer' ? "/designer-logo.png" : "/roboauto-logo.png"}
+            alt="Logo"
+            className="robot-profile-img"
+            style={{ padding: activeAgentId === 'designer' ? '8px' : '0' }}
+          />
         </div>
-        <div className="hide-mobile">
-          <div className="header-title">RoboAuto</div>
+        <div className="header-info">
+          <h1 className="header-title">{activeAgent?.name || 'Carregando...'}</h1>
+          <span className="header-subtitle">{activeAgent?.description || ''}</span>
         </div>
-        <button className="header-portfolio-btn" onClick={onOpenPortfolio}>
-          <LayoutGrid size={14} />
-          <span className="hide-mobile">Ver</span> Portfólio
-        </button>
+        
+        {!hasMessages && (
+          <AgentTabs 
+            agents={agents}
+            activeAgentId={activeAgentId} 
+            onChangeAgent={onAgentChange} 
+          />
+        )}
       </div>
       <div className="header-right">
-        {user?.is_admin && (
+        {!isDesigner && (
           <button 
-            className="header-portfolio-btn admin-btn" 
+            className="header-portfolio-btn" 
+            onClick={onOpenPortfolio}
+          >
+            Portfolio
+          </button>
+        )}
+
+        {user?.is_admin && (
+          <button
+            className="header-portfolio-btn admin-btn"
             onClick={() => navigate('/admin')}
             title="Painel Admin"
           >

@@ -35,6 +35,11 @@ export const chatService = {
 
   async resetChat(): Promise<void> {
     await api.post('/api/reset')
+  },
+
+  async getAgents(): Promise<any[]> {
+    const { data } = await api.get('/api/agents')
+    return data
   }
 }
 

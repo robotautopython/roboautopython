@@ -13,6 +13,8 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Plans } from './pages/Plans'
 import { Admin } from './pages/Admin'
+import { chatService } from './services/chatService'
+import type { Agent } from './types'
 
 function formatMessage(content: string): string {
   let html = content
@@ -74,9 +76,29 @@ function copyToClipboard(text: string): Promise<void> {
 }
 
 function MainChat() {
+  const [agents, setAgents] = useState<Agent[]>([
+    { id: 'automation-expert', name: 'RoboAuto', description: 'Especialista em Automação Inteligente', icon: 'Bot' },
+    { id: 'designer', name: 'Designer', description: 'AI Branding & Design', icon: 'Palette' }
+  ])
+  const [activeAgentId, setActiveAgentId] = useState(() => {
+    return localStorage.getItem('activeAgentId') || 'automation-expert'
+  })
+
+  useEffect(() => {
+    localStorage.setItem('activeAgentId', activeAgentId)
+  }, [activeAgentId])
   const { messages, prevMessages, isLoading, sendMessage, resetChat, undoReset, chatEndRef, error } = useChat()
   const [showPortfolio, setShowPortfolio] = useState(false)
-  const { user } = useAuth()
+
+  useEffect(() => {
+    chatService.getAgents().then(setAgents).catch(console.error)
+  }, [])
+
+  const handleSendMessage = (text: string, image?: File) => {
+    sendMessage(text, activeAgentId, image)
+  }
+
+  const isDesigner = activeAgentId === 'designer'
 
   // Handle code block button clicks via event delegation
   useEffect(() => {
@@ -112,12 +134,28 @@ function MainChat() {
   }, [])
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${isDesigner ? 'theme-pink' : ''}`}>
+      <div className="video-background-container">
+        <video 
+          className="welcome-hero-video" 
+          autoPlay 
+          muted 
+          loop 
+          playsInline
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
+        <div className="video-overlay" />
+      </div>
+
       <div className="ambient-orb orb-1" />
       <div className="ambient-orb orb-2" />
       <div className="ambient-orb orb-3" />
 
       <Header 
+        agents={agents}
+        activeAgentId={activeAgentId}
+        onAgentChange={setActiveAgentId}
         hasMessages={messages.length > 0} 
         canUndo={prevMessages.length > 0}
         onReset={resetChat} 
@@ -142,7 +180,12 @@ function MainChat() {
       )}
 
       {messages.length === 0 && !isLoading ? (
-        <Welcome onSendSuggestion={(prompt) => sendMessage(prompt)} />
+        <Welcome 
+          agents={agents}
+          activeAgentId={activeAgentId} 
+          onSendSuggestion={(prompt) => handleSendMessage(prompt)} 
+          onOpenPortfolio={() => setShowPortfolio(true)}
+        />
       ) : (
         <ChatArea 
           messages={messages} 
@@ -152,11 +195,7 @@ function MainChat() {
         />
       )}
 
-      <div style={{ zIndex: 10, textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', padding: '0.5rem' }}>
-        {user ? `${user.interactions_used} / ${user.interactions_limit} interações` : ''}
-      </div>
-      
-      <InputArea onSendMessage={sendMessage} isLoading={isLoading} />
+      <InputArea onSendMessage={handleSendMessage} isLoading={isLoading} />
 
       
       <Footer />

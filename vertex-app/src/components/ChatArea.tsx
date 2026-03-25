@@ -1,3 +1,4 @@
+import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { User } from 'lucide-react'
 import type { Message } from '../types'
@@ -11,10 +12,10 @@ interface ChatAreaProps {
   formatMessage: (content: string) => string
 }
 
-export const ChatArea = ({ messages, isLoading, chatEndRef, formatMessage }: ChatAreaProps) => {
+export const ChatArea: React.FC<ChatAreaProps> = ({ messages, isLoading, chatEndRef, formatMessage }) => {
   return (
     <div className="chat-area">
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {messages.map((msg) => (
           <motion.div
             key={msg.id}
@@ -27,12 +28,15 @@ export const ChatArea = ({ messages, isLoading, chatEndRef, formatMessage }: Cha
             <div className="message-avatar">
               {msg.role === 'assistant' ? (
                 <img 
-                  src={ROBOT_IMAGES[messages.indexOf(msg) % ROBOT_IMAGES.length]} 
-                  alt="Robot Assistant" 
+                  src={msg.agentId === 'designer' ? "/designer-logo.png" : "https://ik.imagekit.io/lflb43qwh/MEU%20ROB%C3%94/01d98a63-915e-4e9e-8098-d118cef3e431.psd%20(1).png"} 
+                  alt="Assistant Avatar" 
                   className="robot-avatar-img"
+                  style={msg.agentId === 'designer' ? { padding: '2px' } : {}}
                 />
               ) : (
-                <User size={18} />
+                <div className="user-avatar-placeholder">
+                  <User size={18} />
+                </div>
               )}
             </div>
             <div className="message-content-wrap">
@@ -41,12 +45,28 @@ export const ChatArea = ({ messages, isLoading, chatEndRef, formatMessage }: Cha
                   <img src={msg.imageUrl} alt="Imagem enviada" className="message-image" />
                 </div>
               )}
+              
               <div
-                className="message-bubble"
-                dangerouslySetInnerHTML={{
-                  __html: formatMessage(msg.content),
-                }}
-              />
+                className={`message-bubble ${msg.imageGenerated ? 'has-generated-img' : ''}`}
+              >
+                <div dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }} />
+                
+                {msg.imageGenerated && (
+                  <motion.div 
+                    className="generated-image-container"
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <img 
+                      src={`data:image/png;base64,${msg.imageGenerated}`} 
+                      alt="Logo Gerada" 
+                      className="generated-image" 
+                    />
+                    <div className="img-generation-glow" />
+                  </motion.div>
+                )}
+              </div>
             </div>
           </motion.div>
         ))}
@@ -55,7 +75,7 @@ export const ChatArea = ({ messages, isLoading, chatEndRef, formatMessage }: Cha
       {isLoading && (
         <div className="typing-indicator">
           <div className="message-avatar robot-loading-avatar">
-            <img src={ROBOT_IMAGES[0]} alt="Loading..." className="robot-avatar-img" />
+             <div className="loading-dot-pulse" />
           </div>
           <div className="typing-dots">
             <span />

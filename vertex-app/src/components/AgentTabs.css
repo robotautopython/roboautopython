@@ -1,0 +1,62 @@
+.agent-tabs-container {
+  display: flex;
+  background: rgba(10, 15, 25, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  margin: 0 auto;
+  gap: 4px;
+}
+
+.agent-tab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.agent-tab svg {
+  transition: transform 0.3s ease;
+}
+
+.agent-tab:hover {
+  color: var(--text-primary);
+}
+
+.agent-tab:hover svg {
+  transform: scale(1.1);
+}
+
+/* Active RoboAuto State */
+.agent-tab.active-automation {
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+/* Active Designer State */
+.agent-tab.active-designer {
+  background: rgba(255, 0, 255, 0.1);
+  color: #ff00ff;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.15);
+  border: 1px solid rgba(255, 0, 255, 0.3);
+}
+
+@media (max-width: 600px) {
+  .agent-tab span {
+    display: none;
+  }
+  .agent-tab {
+    padding: 10px;
+  }
+}
