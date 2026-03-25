@@ -74,7 +74,7 @@ function copyToClipboard(text: string): Promise<void> {
 }
 
 function MainChat() {
-  const { messages, isLoading, sendMessage, resetChat, chatEndRef, error } = useChat()
+  const { messages, prevMessages, isLoading, sendMessage, resetChat, undoReset, chatEndRef, error } = useChat()
   const [showPortfolio, setShowPortfolio] = useState(false)
   const { user } = useAuth()
 
@@ -119,45 +119,44 @@ function MainChat() {
 
       <Header 
         hasMessages={messages.length > 0} 
+        canUndo={prevMessages.length > 0}
         onReset={resetChat} 
+        onUndo={undoReset}
         onOpenPortfolio={() => setShowPortfolio(true)}
       />
 
-      {error ? (
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, zIndex: 10, padding: '2rem'
-        }}>
-          <div style={{ background: 'rgba(255,59,48,0.1)', color: '#ff3b30', padding: '1rem 2rem', borderRadius: '12px', textAlign: 'center' }}>
-            {error.includes("Interações esgotadas") || error.includes("Usuário inativo") ? (
+      {error && (
+        <div className="error-overlay">
+          <div style={{ background: 'rgba(255,59,48,0.95)', color: '#fff', padding: '1rem', borderRadius: '12px', textAlign: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)' }}>
+            {error.includes("Interações esgotadas") || error.includes("Usuário inativo") || error.includes("Limite") ? (
               <>
                 <p style={{ margin: 0, fontWeight: 600 }}>{error}</p>
-                <Link to="/plans" style={{ display: 'inline-block', marginTop: '1rem', background: '#ff3b30', color: '#fff', textDecoration: 'none', padding: '0.5rem 1rem', borderRadius: '6px' }}>Solicitar Mais Interações</Link>
+                <Link to="/plans" style={{ display: 'inline-block', marginTop: '1rem', background: '#fff', color: '#ff3b30', textDecoration: 'none', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: 700 }}>Ver Planos</Link>
+                <button onClick={resetChat} style={{ display: 'inline-block', marginLeft: '0.5rem', background: 'transparent', color: '#fff', border: '1px solid #fff', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>Nova Conversa</button>
               </>
             ) : (
               error
             )}
           </div>
         </div>
-      ) : (
-        <>
-          {messages.length === 0 && !isLoading ? (
-            <Welcome onSendSuggestion={(prompt) => sendMessage(prompt)} />
-          ) : (
-            <ChatArea 
-              messages={messages} 
-              isLoading={isLoading} 
-              chatEndRef={chatEndRef} 
-              formatMessage={formatMessage} 
-            />
-          )}
-
-          <div style={{ zIndex: 10, textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', padding: '0.5rem' }}>
-            {user ? `${user.interactions_used} / ${user.interactions_limit} interações` : ''}
-          </div>
-          
-          <InputArea onSendMessage={sendMessage} isLoading={isLoading} />
-        </>
       )}
+
+      {messages.length === 0 && !isLoading ? (
+        <Welcome onSendSuggestion={(prompt) => sendMessage(prompt)} />
+      ) : (
+        <ChatArea 
+          messages={messages} 
+          isLoading={isLoading} 
+          chatEndRef={chatEndRef} 
+          formatMessage={formatMessage} 
+        />
+      )}
+
+      <div style={{ zIndex: 10, textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', padding: '0.5rem' }}>
+        {user ? `${user.interactions_used} / ${user.interactions_limit} interações` : ''}
+      </div>
+      
+      <InputArea onSendMessage={sendMessage} isLoading={isLoading} />
 
       
       <Footer />

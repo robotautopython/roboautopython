@@ -15,6 +15,14 @@ export const useChat = () => {
     return []
   })
   
+  const [prevMessages, setPrevMessages] = useState<Message[]>(() => {
+    if (typeof window !== 'undefined' && user) {
+      const saved = localStorage.getItem(`chat_history_prev_${user.id}`)
+      return saved ? JSON.parse(saved) : []
+    }
+    return []
+  })
+  
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
@@ -23,18 +31,22 @@ export const useChat = () => {
   useEffect(() => {
     if (user) {
       const saved = localStorage.getItem(`chat_history_${user.id}`)
+      const savedPrev = localStorage.getItem(`chat_history_prev_${user.id}`)
       setMessages(saved ? JSON.parse(saved) : [])
+      setPrevMessages(savedPrev ? JSON.parse(savedPrev) : [])
     } else {
       setMessages([])
+      setPrevMessages([])
     }
   }, [user?.id])
 
   // Salva no localStorage sempre que as mensagens mudarem
   useEffect(() => {
-    if (storageKey) {
+    if (storageKey && user) {
       localStorage.setItem(storageKey, JSON.stringify(messages))
+      localStorage.setItem(`chat_history_prev_${user.id}`, JSON.stringify(prevMessages))
     }
-  }, [messages, storageKey])
+  }, [messages, prevMessages, storageKey, user])
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -78,23 +90,35 @@ export const useChat = () => {
   }
 
   const resetChat = async () => {
+    // Salva a conversa atual como "anterior" antes de resetar
+    if (messages.length > 0) {
+      setPrevMessages(messages)
+    }
+
     try {
       await chatService.resetChat()
     } catch { /* ignore */ }
     
-    if (storageKey) {
-      localStorage.removeItem(storageKey)
-    }
     setMessages([])
     setError(null)
   }
 
+  const undoReset = () => {
+    if (prevMessages.length > 0) {
+      const current = [...messages]
+      setMessages(prevMessages)
+      setPrevMessages(current)
+    }
+  }
+
   return {
     messages,
+    prevMessages,
     isLoading,
     error,
     sendMessage,
     resetChat,
+    undoReset,
     chatEndRef,
   }
 }

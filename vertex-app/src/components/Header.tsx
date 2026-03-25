@@ -1,14 +1,16 @@
-import { Bot, RotateCcw, LayoutGrid, Shield, LogOut } from 'lucide-react'
+import { Bot, History as HistoryIcon, LayoutGrid, Shield, LogOut, XCircle } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 interface HeaderProps {
   hasMessages: boolean
+  canUndo: boolean
   onReset: () => void
+  onUndo: () => void
   onOpenPortfolio: () => void
 }
 
-export const Header = ({ hasMessages, onReset, onOpenPortfolio }: HeaderProps) => {
+export const Header = ({ hasMessages, canUndo, onReset, onUndo, onOpenPortfolio }: HeaderProps) => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -23,44 +25,53 @@ export const Header = ({ hasMessages, onReset, onOpenPortfolio }: HeaderProps) =
         <div className="logo-icon">
           <Bot size={22} />
         </div>
-        <div>
+        <div className="hide-mobile">
           <div className="header-title">Robot auto Python</div>
         </div>
         <button className="header-portfolio-btn" onClick={onOpenPortfolio}>
           <LayoutGrid size={14} />
-          Ver Portfólio
+          <span className="hide-mobile">Ver</span> Portfólio
         </button>
       </div>
       <div className="header-right">
         {user?.is_admin && (
           <button 
-            className="header-portfolio-btn" 
+            className="header-portfolio-btn admin-btn" 
             onClick={() => navigate('/admin')}
-            style={{ borderColor: 'rgba(80, 250, 123, 0.3)', color: '#50fa7b' }}
-            title="Acessar o Painel de Administração"
+            title="Painel Admin"
           >
             <Shield size={14} />
-            Admin
+            <span className="hide-mobile">Admin</span>
           </button>
         )}
-        <button 
-          className="header-portfolio-btn" 
-          onClick={handleLogout}
-          style={{ borderColor: 'rgba(255, 85, 85, 0.3)', color: '#ff5555' }}
-          title="Sair da Conta"
-        >
-          <LogOut size={14} />
-          Sair
-        </button>
+        
+        {canUndo && (
+          <button 
+            className="header-btn undo-btn" 
+            title="Voltar para conversa anterior" 
+            onClick={onUndo}
+          >
+            <HistoryIcon size={18} />
+          </button>
+        )}
+
         {hasMessages && (
           <button 
-            className="header-btn" 
-            title="Nova conversa" 
+            className="header-btn exit-btn" 
+            title="Sair da conversa" 
             onClick={onReset}
           >
-            <RotateCcw size={16} />
+            <XCircle size={18} />
           </button>
         )}
+        
+        <button 
+          className="header-btn logout-btn" 
+          onClick={handleLogout}
+          title="Sair da Conta"
+        >
+          <LogOut size={16} />
+        </button>
       </div>
     </header>
   )
