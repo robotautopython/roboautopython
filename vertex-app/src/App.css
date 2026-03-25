@@ -73,16 +73,18 @@
 
 /* ===== HEADER ===== */
 .header {
-  position: relative;
-  z-index: 10;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  background: var(--bg-glass);
+  background: rgba(10, 15, 25, 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.15);
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
 }
 
 .header-left {
