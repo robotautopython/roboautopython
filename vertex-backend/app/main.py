@@ -15,10 +15,18 @@ app.add_middleware(
         "http://localhost:5174",
         "https://roboautopython.vercel.app"
     ],
+    allow_origin_regex="https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def log_requests(request, call_next):
+    origin = request.headers.get("origin")
+    print(f"Incoming request from origin: {origin}")
+    response = await call_next(request)
+    return response
 
 # Incluindo rotas
 app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
