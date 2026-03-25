@@ -53,7 +53,7 @@ export function Plans() {
       
       <div style={{ textAlign: 'center', marginBottom: '3rem', zIndex: 10 }}>
         <h1 style={{ color: '#fff', fontSize: '2.5rem', fontWeight: 700 }}>Escolha seu Plano</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginTop: '0.5rem', fontSize: '1.1rem' }}>Desbloqueie interações com o Robot auto Python</p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginTop: '0.5rem', fontSize: '1.1rem' }}>Desbloqueie interações com o RoboAuto</p>
       </div>
 
       {success && (

@@ -59,9 +59,10 @@ export const Welcome = ({ onSendSuggestion }: WelcomeProps) => {
         <div className="neon-wrapper-avatar">
           <div className="welcome-avatar-circle-inner">
             <img 
-              src="https://ik.imagekit.io/lflb43qwh/MEU%20ROB%C3%94/01d98a63-915e-4e9e-8098-d118cef3e431.psd%20(1).png" 
-              alt="Robot Avatar" 
+              src="/roboauto-logo.png" 
+              alt="RoboAuto Logo" 
               className="robot-profile-img"
+              style={{ padding: '4px' }}
             />
           </div>
         </div>

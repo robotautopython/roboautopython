@@ -1,4 +1,4 @@
-import { Bot, History as HistoryIcon, LayoutGrid, Shield, LogOut, XCircle } from 'lucide-react'
+import { History as HistoryIcon, LayoutGrid, Shield, LogOut, XCircle } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
@@ -22,11 +22,11 @@ export const Header = ({ hasMessages, canUndo, onReset, onUndo, onOpenPortfolio 
   return (
     <header className="header">
       <div className="header-left">
-        <div className="logo-icon">
-          <Bot size={22} />
+        <div className="logo-icon brand-logo">
+          <img src="/roboauto-logo.png" alt="RoboAuto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
         <div className="hide-mobile">
-          <div className="header-title">Robot auto Python</div>
+          <div className="header-title">RoboAuto</div>
         </div>
         <button className="header-portfolio-btn" onClick={onOpenPortfolio}>
           <LayoutGrid size={14} />
