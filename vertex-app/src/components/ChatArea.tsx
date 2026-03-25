@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { User } from 'lucide-react'
 import type { Message } from '../types'
 import type { RefObject } from 'react'
-import { ROBOT_IMAGES } from '../constants'
 
 interface ChatAreaProps {
   messages: Message[]
