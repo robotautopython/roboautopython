@@ -33,7 +33,16 @@ app.include_router(chat_router, prefix="/api", tags=["Chat"])
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "version": "1.0.3_antigravity"}
+    return {"status": "ok", "version": "1.0.4_antigravity"}
+
+@app.get("/api/debug/db")
+async def debug_db():
+    try:
+        from app.core.supabase_client import supabase_client
+        res = supabase_client.table("users").select("id").limit(1).execute()
+        return {"status": "connected", "data_count": len(res.data)}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 @app.get("/api/debug/headers")
 async def debug_headers(request: Request):
@@ -41,5 +50,6 @@ async def debug_headers(request: Request):
         "headers": dict(request.headers),
         "client": request.client.host,
         "method": request.method,
-        "url": str(request.url)
+        "url": str(request.url),
+        "version": "1.0.4_antigravity"
     }
