@@ -41,4 +41,4 @@ app.include_router(chat_router, prefix="/api", tags=["Chat"])
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok"}
+    return {"status": "ok", "version": "1.0.1_antigravity"}
