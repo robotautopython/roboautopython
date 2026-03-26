@@ -33,14 +33,19 @@ app.include_router(chat_router, prefix="/api", tags=["Chat"])
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "version": "1.0.4_antigravity"}
+    return {"status": "ok", "version": "1.0.5_antigravity"}
 
 @app.get("/api/debug/db")
 async def debug_db():
     try:
         from app.core.supabase_client import supabase_client
+        from app.core.config import settings
         res = supabase_client.table("users").select("id").limit(1).execute()
-        return {"status": "connected", "data_count": len(res.data)}
+        return {
+            "status": "connected", 
+            "data_count": len(res.data),
+            "supabase_url": settings.SUPABASE_URL[:20] + "..." # Mascarado
+        }
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
