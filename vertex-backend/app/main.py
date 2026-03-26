@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.chat import router as chat_router
 from app.api.v1.auth import router as auth_router
@@ -33,4 +33,13 @@ app.include_router(chat_router, prefix="/api", tags=["Chat"])
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "version": "1.0.2_antigravity"}
+    return {"status": "ok", "version": "1.0.3_antigravity"}
+
+@app.get("/api/debug/headers")
+async def debug_headers(request: Request):
+    return {
+        "headers": dict(request.headers),
+        "client": request.client.host,
+        "method": request.method,
+        "url": str(request.url)
+    }
